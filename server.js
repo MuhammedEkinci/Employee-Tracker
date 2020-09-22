@@ -38,5 +38,50 @@ function startCompany() {
               "Update Employee Manager",
               "EXIT"
             ]
-        })
+        }).then (function(answer) {
+            switch (answer.action) {
+                case "View All Employees":
+                    viewEmployees();
+                    break;
+
+                case "View All Employees By Department":
+                    viewEmployeesByDept();
+                    break;
+
+                case "View departments":
+                    viewDeptartment();
+                    break;
+
+                case "View roles":
+                    viewRoles();
+                    break;
+
+                case "Add department":
+                    addDept();
+                    break;
+
+                case "Add role":
+                    addRole();
+                    break;
+
+                case "Add Employee":
+                    addEmployee();
+                    break;
+
+                case "Remove Employee":
+                    removeEmployee();
+                    break;
+
+                case "Update Employee Role":
+                    updateEmployeeRole();
+                    break;
+
+                case "Update Employee Manager":
+                    updateEmployeeMng();
+                    break;
+
+                case "EXIT":
+                    process.exit();
+            }
+        });
 }
