@@ -8,7 +8,7 @@ var connection = mysql.createConnection({
   port: 3306,
   user: "root",
   password: "*Momaster1",
-  database: "pets_db"
+  database: "employee_db"
 });
 
 connection.connect(function(err) {
@@ -45,7 +45,7 @@ function startCompany() {
                     break;
 
                 case "View All Employees By Department":
-                    viewEmployeesByDept();
+                    viewEmployeesByDeptartment();
                     break;
 
                 case "View departments":
@@ -57,7 +57,7 @@ function startCompany() {
                     break;
 
                 case "Add department":
-                    addDept();
+                    addDeptartment();
                     break;
 
                 case "Add role":
@@ -84,4 +84,17 @@ function startCompany() {
                     process.exit();
             }
         });
+}
+
+//function to view all Employees
+function viewEmployees() {
+    var query = `SELECT employees.id, employees.first_name, employees.last_name, role.title, departments.name AS department, 
+    role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS Manager FROM employees LEFT JOIN role on employees.role_id = role.id 
+    LEFT JOIN departments on role.department_id = departments.id LEFT JOIN employees manager on manager.id = employees.manager_id;`;
+
+    connection.query(query, function(err, query) {
+        console.table(query);
+        startCompany();
+    });
+
 }
