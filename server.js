@@ -13,8 +13,30 @@ var connection = mysql.createConnection({
 
 connection.connect(function(err) {
   if (err) {
-    console.error("error connecting: " + err.stack);
-    return;
+    throw err;
   }
-  console.log("connected as id " + connection.threadId);
+  startCompany();
 });
+
+//Function that asks the questions and starts app
+function startCompany() {
+    inquirer
+        .prompt({
+            name: "action",
+            type: "rawlist",
+            message: "What would you like to do?",
+            choices: [
+              "View All Employees",
+              "View All Employees By Department",
+              "View departments",
+              "View roles",
+              "Add department",
+              "Add role",
+              "Add Employee",
+              "Remove Employee",
+              "Update Employee Role",
+              "Update Employee Manager",
+              "EXIT"
+            ]
+        })
+}
