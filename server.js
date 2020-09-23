@@ -45,11 +45,11 @@ function startCompany() {
                     break;
 
                 case "View All Employees By Department":
-                    viewEmployeesByDeptartment();
+                    viewEmployeesByDepartment();
                     break;
 
                 case "View departments":
-                    viewDeptartment();
+                    viewDepartment();
                     break;
 
                 case "View roles":
@@ -57,7 +57,7 @@ function startCompany() {
                     break;
 
                 case "Add department":
-                    addDeptartment();
+                    addDepartment();
                     break;
 
                 case "Add role":
@@ -179,3 +179,32 @@ function addEmployee() {
     })
   };
   
+//Function to view employees by department 
+function viewEmployeesByDepartment() {
+    var queryString =`SELECT departments.name AS department, employees.id, employees.first_name, employees.last_name, role.title FROM employees 
+    LEFT JOIN role on employees.role_id = role.id LEFT JOIN departments departments on role.department_id = departments.id WHERE departments.id;`;
+
+    connection.query(queryString, function(err, query){
+      console.table(query);
+      startCompany();
+  });
+};
+
+//function to view all the departments
+function viewDepartment() {
+    var queryString = `SELECT id AS Dept_ID, name AS departments FROM departments;`;
+    connection.query(queryString, function(err, query){
+      console.table(query);
+      startCompany();
+    });
+  };
+
+
+//FUNCTION to view all roles
+function viewRoles() {
+    var queryString = "SELECT id AS Role_ID, title, salary AS Salaries FROM role;";
+    connection.query(queryString, function(err, query) {
+        console.table(query);
+        startCompany();
+    });
+}
