@@ -208,3 +208,27 @@ function viewRoles() {
         startCompany();
     });
 }
+
+
+//function to add Departments
+function addDepartment() {
+    inquirer.prompt([
+        {
+            name: "dept",
+            type: "input",
+            message: "Enter new department's name:"
+        }
+    ])
+    .then(function(answer) {
+        connection.query("INSERT INTO departments SET ?",
+            {
+                name: answer.dept
+            },
+            function(err){
+                if(err) throw err;
+                console.log("Department " + answer.dept + " successfully added!");
+                startCompany();
+            }
+        );
+    });
+}
