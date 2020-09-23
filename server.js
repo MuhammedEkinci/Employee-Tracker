@@ -98,3 +98,84 @@ function viewEmployees() {
     });
 
 }
+
+//Function to add a new employee
+function addEmployee() {
+    //arrays to display prompt choices from database items 
+    var roles = [];
+    connection.query("SELECT * FROM role", function(err, resRole) {
+      if (err) throw err;
+      for (var i = 0; i < resRole.length; i++) {
+        var roleList = resRole[i].title;
+        roles.push(roleList);
+      };
+  
+      var departs = [];
+      connection.query("SELECT * FROM departments", function(err, resDept) {
+        if (err) throw err;
+        for (var i = 0; i < resDept.length; i++) {
+          var deptList = resDept[i].name;
+          departs.push(deptList);
+      }
+      
+    inquirer
+      .prompt([
+      {
+        name: "firstName",
+        type: "input",
+        message: "What is employee's first name:"
+      },
+      {
+        name: "lastName",
+        type: "input",
+        message: "What is employee's last name:"
+      },
+      {
+        name: "role_id",
+        type: "rawlist",
+        message: "Select employee role:",
+        choices: roles
+      },
+      {
+        name: "department_id",
+        type: "rawlist",
+        message: "Select employee's department:",
+        choices: departs
+      },
+  
+    ])
+      .then(function(answer) {
+        //for loop to retun 
+        var roleChosen;
+          for (var i = 0; i < resRole.length; i++) {
+            if (resRole[i].title === answer.role_id) {
+              roleChosen = resRole[i];
+            }
+          };
+  
+          var chosenDept;
+          for (var i = 0; i < resDept.length; i++) {
+            if (resDept[i].name === answer.department_id) {
+              chosenDept = resDept[i];
+            }
+          };
+        //connection to insert response into database  
+        connection.query(
+          "INSERT INTO employees SET ?",
+          {
+            first_name: answer.firstName,
+            last_name: answer.lastName,
+            role_id: roleChosen.id,
+            department_id: chosenDept.id
+          },
+          function(err) {
+            if (err) throw err;
+            console.log("Employee " + answer.firstName + " " + answer.lastName + " successfully added!");
+            startApp();
+          }
+        );
+      })
+     });
+    })
+  };
+  
