@@ -33,9 +33,7 @@ function startCompany() {
               "Add department",
               "Add role",
               "Add Employee",
-              "Remove Employee",
-              "Update Employee Role",
-              "Update Employee Manager",
+              "Delete Employee",
               "EXIT"
             ]
         }).then (function(answer) {
@@ -68,16 +66,8 @@ function startCompany() {
                     addEmployee();
                     break;
 
-                case "Remove Employee":
-                    removeEmployee();
-                    break;
-
-                case "Update Employee Role":
-                    updateEmployeeRole();
-                    break;
-
-                case "Update Employee Manager":
-                    updateEmployeeMng();
+                case "Delete Employee":
+                    deleteEmployee();
                     break;
 
                 case "EXIT":
@@ -232,3 +222,96 @@ function addDepartment() {
         );
     });
 }
+
+//function to add Role
+function addRole() {
+    var departChoice = [];
+    connection.query("SELECT * FROM departments", function(err, resDepart) {
+        if(err) throw err;
+        for(var i = 0; i < resDepart.length; i++) {
+            var deptList = resDepart[i].name;
+            departChoice.push(deptList);
+        }
+
+        inquirer
+        .prompt([
+        {
+            name: "title",
+            type: "input",
+            message: "Enter new role:"
+        },
+        {
+            name: "salary",
+            type: "number",
+            message: "Enter new role's salary:"
+        },
+        {
+            name: "department_id",
+            type: "rawlist",
+            message: "Select employee's department:",
+            choices: departChoice
+        }
+        ])
+        .then(function(answer) {
+            var chosenDept;
+            for (var i = 0; i < resDepart.length; i++) {
+              if (resDepart[i].name === answer.department_id) {
+                chosenDept = resDepart[i];
+              }
+            }
+            connection.query("INSERT INTO role SET ?",
+                {
+                  title: answer.title,
+                  salary:answer.salary,
+                  department_id: chosenDept.id
+                },
+                function(err) {
+                  if (err) throw err;
+                  console.log("New role " + answer.title + " successfully added!");
+                  startCompany();
+                }
+            );
+        });
+    });
+}
+
+//function to delete Employee
+function deleteEmployee() {
+    var employeeChoice = [];
+      connection.query("SELECT id, CONCAT(first_name, ' ', last_name) AS name FROM employees", function(err, resEmp) {
+        if (err) throw err;
+        for (var i = 0; i < resEmp.length; i++) {
+          var empList = resEmp[i].name;
+          employeeChoice.push(empList);
+      };
+  
+    inquirer
+      .prompt([
+        {
+          name: "employee_id",
+          type: "rawlist",
+          message: "Select the employee you would like to remove:",
+          choices: employeeChoice
+        },
+    ])
+    .then(function(answer) {
+  
+      var chosenEmp;
+          for (var i = 0; i < resEmp.length; i++) {
+            if (resEmp[i].name === answer.employee_id) {
+              chosenEmp = resEmp[i];
+          }
+        };
+  
+      connection.query("DELETE FROM employees WHERE id=?",
+        [chosenEmp.id],
+  
+        function(err) {
+          if (err) throw err;
+          console.log("Employee successfully removed!");
+          startApp();
+        }
+      );
+     });
+    })
+  };
